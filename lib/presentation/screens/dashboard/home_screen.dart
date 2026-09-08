@@ -81,15 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Group> groups = getIt.isRegistered<GroupRepository>()
         ? (await getIt<GroupRepository>().getAll()).valueOrNull ?? const []
         : const [];
-    final balances = await _loadBalanceSummary(
-      receiptsResult.valueOrNull ?? const [],
-      groups,
-    );
+    final receipts = (receiptsResult.valueOrNull ?? const <Receipt>[]).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final drafts = (draftsResult.valueOrNull ?? const <Receipt>[]).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final balances = await _loadBalanceSummary(receipts, groups);
     if (!mounted) return;
     setState(() {
       _friends = friendsResult.valueOrNull ?? [];
-      _receipts = receiptsResult.valueOrNull ?? [];
-      _drafts = draftsResult.valueOrNull ?? [];
+      _receipts = receipts;
+      _drafts = drafts;
       _displayName = profileResult.valueOrNull;
       _owedToMeCents = balances.owedToMe;
       _iOweCents = balances.iOwe;
