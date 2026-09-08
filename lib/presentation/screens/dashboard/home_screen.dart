@@ -7,11 +7,7 @@ import 'package:billbuddy/data/entities/participant.dart';
 import 'package:billbuddy/presentation/screens/account/notifications_screen.dart';
 import 'package:billbuddy/presentation/screens/account/profile_screen.dart';
 import 'package:billbuddy/presentation/screens/people/friends_screen.dart';
-import 'package:billbuddy/presentation/screens/people/groups_screen.dart';
-import 'package:billbuddy/presentation/screens/receipts/balances_screen.dart';
 import 'package:billbuddy/presentation/screens/receipts/item_assignment_screen.dart';
-import 'package:billbuddy/presentation/screens/receipts/manual_bill_screen.dart';
-import 'package:billbuddy/presentation/screens/receipts/pending_bills_screen.dart';
 import 'package:billbuddy/presentation/screens/receipts/recent_bills_screen.dart';
 import 'package:billbuddy/presentation/screens/receipts/review_screen.dart';
 import 'package:billbuddy/presentation/screens/receipts/scan_screen.dart';
@@ -56,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _ink = Color(0xff171717);
   static const _purple = Color(0xffffd21f);
   static const _paper = Color(0xfffffbf2);
-  static const _softPurple = Color(0xff8e7cff);
   static const _peach = Color(0xffff8f70);
   static const _green = Color(0xff93e66a);
   static const _blue = Color(0xff81d7ff);
@@ -251,7 +246,6 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 18),
               _buildBalanceSection(context),
               const SizedBox(height: 18),
-              _buildQuickLinks(context),
             ],
           ),
         ),
@@ -600,76 +594,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Color(0xff82aec7),
     ];
     return colors[index % colors.length];
-  }
-
-  Widget _buildQuickLinks(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      children: [
-        _quickLink(
-          context,
-          Icons.pending_actions_rounded,
-          'Pending bills',
-          const PendingBillsScreen(),
-        ),
-        _quickLink(
-          context,
-          Icons.groups_rounded,
-          'Groups',
-          const GroupsScreen(),
-        ),
-        _quickLink(
-          context,
-          Icons.edit_note,
-          'Manual bill',
-          const ManualBillScreen(),
-        ),
-        _quickLink(
-          context,
-          Icons.account_balance_wallet_outlined,
-          'Balances',
-          const BalancesScreen(),
-        ),
-      ],
-    );
-  }
-
-  Widget _quickLink(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Widget screen,
-  ) {
-    return InkWell(
-      onTap: () => _open(context, screen),
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 8),
-        decoration: BoxDecoration(
-          color: [_green, _blue, _peach, _softPurple][label.hashCode.abs() % 4],
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: _ink, width: 3),
-          boxShadow: const [BoxShadow(color: _ink, offset: Offset(4, 4))],
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: _ink, size: 24),
-            const SizedBox(height: 5),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: _ink,
-                fontSize: 11,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   BoxDecoration _brutalDecoration(Color color, {double radius = 16}) {

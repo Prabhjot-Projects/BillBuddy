@@ -83,8 +83,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Scan receipt'), findsNWidgets(2));
-    expect(find.text('Manual bill'), findsOneWidget);
-    expect(find.text('Balances'), findsOneWidget);
+    expect(find.text('Manual bill'), findsNothing);
+    expect(find.text('Balances'), findsNothing);
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Bills'), findsOneWidget);
     expect(find.text('Friends'), findsOneWidget);
