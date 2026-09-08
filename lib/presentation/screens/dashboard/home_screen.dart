@@ -1,6 +1,7 @@
 import 'package:billbuddy/app/di/service_locator.dart';
 import 'package:billbuddy/app/theme/app_colors.dart';
 import 'package:billbuddy/data/entities/friend.dart';
+import 'package:billbuddy/data/entities/group.dart';
 import 'package:billbuddy/data/entities/receipt.dart';
 import 'package:billbuddy/data/entities/participant.dart';
 import 'package:billbuddy/presentation/screens/account/notifications_screen.dart';
@@ -19,6 +20,7 @@ import 'package:billbuddy/processes/receipt/payment_repository.dart';
 import 'package:billbuddy/processes/receipt/receipt_repository.dart';
 import 'package:billbuddy/processes/receipt/split_calculator.dart';
 import 'package:billbuddy/processes/social/friend_repository.dart';
+import 'package:billbuddy/processes/social/group_repository.dart';
 import 'package:billbuddy/services/currency/currency_controller.dart';
 import 'package:billbuddy/services/storage/local/user_profile_service.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,25 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _GroupBalance {
+  final String name;
+  final int cents;
+
+  const _GroupBalance(this.name, this.cents);
+}
+
+class _BalanceSummary {
+  final int owedToMe;
+  final int iOwe;
+  final List<_GroupBalance> groups;
+
+  const _BalanceSummary({
+    required this.owedToMe,
+    required this.iOwe,
+    required this.groups,
+  });
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -45,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _displayName;
   int _owedToMeCents = 0;
   int _iOweCents = 0;
+  List<_GroupBalance> _groupBalances = [];
   bool _isLoading = true;
 
   List<Receipt> get _splitReceipts =>
@@ -61,8 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final receiptsResult = await getIt<ReceiptRepository>().getAllConfirmed();
     final draftsResult = await getIt<ReceiptRepository>().getAllDrafts();
     final profileResult = await getIt<UserProfileService>().getDisplayName();
-    final balances = await _loadBalanceTotals(
+    final List<Group> groups = getIt.isRegistered<GroupRepository>()
+        ? (await getIt<GroupRepository>().getAll()).valueOrNull ?? const []
+        : const [];
+    final balances = await _loadBalanceSummary(
       receiptsResult.valueOrNull ?? const [],
+      groups,
     );
     if (!mounted) return;
     setState(() {
@@ -70,19 +96,29 @@ class _HomeScreenState extends State<HomeScreen> {
       _receipts = receiptsResult.valueOrNull ?? [];
       _drafts = draftsResult.valueOrNull ?? [];
       _displayName = profileResult.valueOrNull;
-      _owedToMeCents = balances.$1;
-      _iOweCents = balances.$2;
+      _owedToMeCents = balances.owedToMe;
+      _iOweCents = balances.iOwe;
+      _groupBalances = balances.groups;
       _isLoading = false;
     });
   }
 
-  Future<(int, int)> _loadBalanceTotals(List<Receipt> receipts) async {
+  Future<_BalanceSummary> _loadBalanceSummary(
+    List<Receipt> receipts,
+    List<Group> groups,
+  ) async {
     if (!getIt.isRegistered<ItemAssignmentRepository>() ||
         !getIt.isRegistered<PaymentRepository>()) {
-      return (0, 0);
+      return _BalanceSummary(
+        owedToMe: 0,
+        iOwe: 0,
+        groups: [for (final group in groups) _GroupBalance(group.name, 0)],
+      );
     }
     var owedToMe = 0;
     var iOwe = 0;
+    final groupTotals = <String, int>{for (final group in groups) group.id: 0};
+    final groupNames = {for (final group in groups) group.id: group.name};
     final assignmentsRepository = getIt<ItemAssignmentRepository>();
     final paymentRepository = getIt<PaymentRepository>();
     for (final receipt in receipts) {
@@ -111,12 +147,33 @@ class _HomeScreenState extends State<HomeScreen> {
         );
         if (payer == meParticipantId) {
           owedToMe += remaining;
+          if (receipt.groupId != null) {
+            groupTotals.update(
+              receipt.groupId!,
+              (value) => value + remaining,
+              ifAbsent: () => remaining,
+            );
+          }
         } else if (share.participantId == meParticipantId) {
           iOwe += remaining;
+          if (receipt.groupId != null) {
+            groupTotals.update(
+              receipt.groupId!,
+              (value) => value - remaining,
+              ifAbsent: () => -remaining,
+            );
+          }
         }
       }
     }
-    return (owedToMe, iOwe);
+    return _BalanceSummary(
+      owedToMe: owedToMe,
+      iOwe: iOwe,
+      groups: [
+        for (final entry in groupTotals.entries)
+          _GroupBalance(groupNames[entry.key] ?? 'Group', entry.value),
+      ],
+    );
   }
 
   void _open(BuildContext context, Widget screen) {
@@ -192,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               _buildPreviousSplit(context),
               const SizedBox(height: 18),
-              _buildFriendsSection(context),
+              _buildBalanceSection(context),
               const SizedBox(height: 18),
               _buildQuickLinks(context),
             ],
@@ -459,107 +516,77 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFriendsSection(BuildContext context) {
+  Widget _buildBalanceSection(BuildContext context) {
     final colors = AppColors.of(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
       decoration: _brutalDecoration(_paper, radius: 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: _peach,
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                child: const Icon(Icons.search_rounded, color: _ink, size: 27),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Text(
-                  'Nearby Friends',
-                  style: TextStyle(
-                    color: _ink,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => _open(context, const FriendsScreen()),
-                child: const Text('See all', style: TextStyle(color: _ink)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          if (_friends.isEmpty)
-            Text(
-              'Add friends to start splitting bills.',
-              style: TextStyle(color: colors.textMuted, fontSize: 12),
-            ),
-          _buildBalanceTotals(),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBalanceTotals() {
-    final currency = getIt<CurrencyController>();
-    return Row(
-      children: [
-        Expanded(
-          child: _balanceTile(
-            label: 'They owe me',
-            amount: currency.format(_owedToMeCents / 100),
-            color: _peach,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _balanceTile(
-            label: 'I owe',
-            amount: currency.format(_iOweCents / 100),
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _balanceTile({
-    required String label,
-    required String amount,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _ink, width: 2),
-        boxShadow: const [BoxShadow(color: _ink, offset: Offset(3, 3))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(color: _ink, fontSize: 12)),
-          const SizedBox(height: 5),
-          Text(
-            amount,
+      child: Material(
+        color: Colors.transparent,
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: Text(
+            'Net balance',
             style: TextStyle(
-              color: _ink,
-              fontSize: 20,
+              color: colors.textPrimary,
+              fontSize: 15,
               fontWeight: FontWeight.w800,
             ),
           ),
-        ],
+          subtitle: Text(
+            _netBalanceLabel(),
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          children: [
+            const Divider(),
+            if (_groupBalances.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  'No group splits yet.',
+                  style: TextStyle(color: colors.textMuted),
+                ),
+              )
+            else
+              ..._groupBalances.map(
+                (group) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(group.name),
+                  subtitle: Text(_groupBalanceLabel(group)),
+                  trailing: Icon(
+                    group.cents >= 0
+                        ? Icons.arrow_downward_rounded
+                        : Icons.arrow_upward_rounded,
+                    color: group.cents >= 0 ? _green : _peach,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  String _netBalanceLabel() {
+    final currency = getIt<CurrencyController>();
+    final net = _owedToMeCents - _iOweCents;
+    if (net == 0) return 'All settled up';
+    return net > 0
+        ? 'You are owed ${currency.format(net / 100)}'
+        : 'You owe ${currency.format(net.abs() / 100)}';
+  }
+
+  String _groupBalanceLabel(_GroupBalance group) {
+    final currency = getIt<CurrencyController>();
+    if (group.cents == 0) return 'Settled up';
+    return group.cents > 0
+        ? 'Group owes you ${currency.format(group.cents / 100)}'
+        : 'You owe group ${currency.format(group.cents.abs() / 100)}';
   }
 
   String _initial(String value) =>
