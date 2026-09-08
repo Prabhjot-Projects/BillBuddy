@@ -1,6 +1,6 @@
 import 'app/di/service_locator.dart';
 import 'app/theme/theme_controller.dart';
-import 'app/theme/app_colors.dart';
+import 'app/theme/app_theme.dart';
 import 'package:billbuddy/firebase_options.dart';
 import 'processes/receipt/receipt_repository.dart';
 import 'services/storage/local/database_service.dart';
@@ -71,45 +71,8 @@ class BillBuddy extends StatelessWidget {
           valueListenable: getIt<CurrencyController>(),
           builder: (context, _, _) => MaterialApp(
             title: 'Bill Buddy',
-            theme: ThemeData(
-              brightness: Brightness.light,
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xff374151),
-              ),
-              extensions: const [AppColors.light],
-              scaffoldBackgroundColor: AppColors.light.surfaceAlt,
-              appBarTheme: AppBarTheme(
-                backgroundColor: AppColors.light.surfaceAlt,
-                foregroundColor: AppColors.light.textPrimary,
-                elevation: 0,
-                centerTitle: true,
-              ),
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size(220, 52)),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xff9ca3af),
-                brightness: Brightness.dark,
-              ),
-              extensions: const [AppColors.dark],
-              scaffoldBackgroundColor: AppColors.dark.surfaceAlt,
-              appBarTheme: AppBarTheme(
-                backgroundColor: AppColors.dark.surfaceAlt,
-                foregroundColor: AppColors.dark.textPrimary,
-                elevation: 0,
-                centerTitle: true,
-              ),
-            ),
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
             themeMode: mode,
             home: const HomeScreen(),
           ),
