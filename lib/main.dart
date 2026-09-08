@@ -1,5 +1,6 @@
 import 'app/di/service_locator.dart';
 import 'app/theme/theme_controller.dart';
+import 'app/theme/app_colors.dart';
 import 'package:billbuddy/firebase_options.dart';
 import 'processes/receipt/receipt_repository.dart';
 import 'services/storage/local/database_service.dart';
@@ -75,9 +76,11 @@ class BillBuddy extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xff4f46e5),
               ),
-              scaffoldBackgroundColor: const Color(0xfff7f7fb),
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Color(0xfff7f7fb),
+              extensions: const [AppColors.light],
+              scaffoldBackgroundColor: AppColors.light.surfaceAlt,
+              appBarTheme: AppBarTheme(
+                backgroundColor: AppColors.light.surfaceAlt,
+                foregroundColor: AppColors.light.textPrimary,
                 elevation: 0,
                 centerTitle: true,
               ),
@@ -97,6 +100,14 @@ class BillBuddy extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xff818cf8),
                 brightness: Brightness.dark,
+              ),
+              extensions: const [AppColors.dark],
+              scaffoldBackgroundColor: AppColors.dark.surfaceAlt,
+              appBarTheme: AppBarTheme(
+                backgroundColor: AppColors.dark.surfaceAlt,
+                foregroundColor: AppColors.dark.textPrimary,
+                elevation: 0,
+                centerTitle: true,
               ),
             ),
             themeMode: mode,

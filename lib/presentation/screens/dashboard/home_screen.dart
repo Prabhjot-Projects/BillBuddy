@@ -1,4 +1,5 @@
 import 'package:billbuddy/app/di/service_locator.dart';
+import 'package:billbuddy/app/theme/app_colors.dart';
 import 'package:billbuddy/data/entities/friend.dart';
 import 'package:billbuddy/data/entities/receipt.dart';
 import 'package:billbuddy/data/entities/participant.dart';
@@ -403,6 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPreviousSplit(BuildContext context) {
+    final colors = AppColors.of(context);
     final receipt = _splitReceipts.isEmpty ? null : _splitReceipts.first;
     return InkWell(
       onTap: () => _open(context, const RecentBillsScreen()),
@@ -434,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   receipt == null
                       ? 'No previous splits'
                       : 'Your previous split',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(color: colors.textMuted, fontSize: 12),
                 ),
                 SizedBox(height: 4),
                 Text(
@@ -442,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? 'Split a confirmed bill to see it here'
                       : getIt<CurrencyController>().format(receipt.total),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: colors.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -450,7 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             Spacer(),
-            Icon(Icons.chevron_right_rounded, color: Colors.white54),
+            Icon(Icons.chevron_right_rounded, color: colors.textMuted),
           ],
         ),
       ),
@@ -458,6 +460,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFriendsSection(BuildContext context) {
+    final colors = AppColors.of(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
       decoration: _brutalDecoration(_paper, radius: 18),
@@ -494,9 +497,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 15),
           if (_friends.isEmpty)
-            const Text(
+            Text(
               'Add friends to start splitting bills.',
-              style: TextStyle(color: Colors.white70, fontSize: 12),
+              style: TextStyle(color: colors.textMuted, fontSize: 12),
             ),
           _buildBalanceTotals(),
           const SizedBox(height: 20),
