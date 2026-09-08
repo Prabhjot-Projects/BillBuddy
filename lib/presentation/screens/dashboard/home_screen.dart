@@ -50,11 +50,11 @@ class _BalanceSummary {
 class _HomeScreenState extends State<HomeScreen> {
   // High-contrast neo-brutalist palette inspired by the supplied references.
   static const _ink = Color(0xff171717);
-  static const _purple = Color(0xffffd21f);
-  static const _paper = Color(0xfffffbf2);
-  static const _peach = Color(0xffff8f70);
-  static const _green = Color(0xff93e66a);
-  static const _blue = Color(0xff81d7ff);
+  static const _canvas = Color(0xfff3f4f6);
+  static const _paper = Colors.white;
+  static const _positive = Color(0xff157347);
+  static const _negative = Color(0xffb42318);
+  static const _neutral = Color(0xffe5e7eb);
   List<Friend> _friends = [];
   List<Receipt> _receipts = [];
   List<Receipt> _drafts = [];
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _purple,
+      backgroundColor: _canvas,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: _ink,
         foregroundColor: Colors.white,
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: _paper,
-        indicatorColor: _purple,
+        indicatorColor: _neutral,
         height: 72,
         elevation: 0,
         labelTextStyle: const WidgetStatePropertyAll(
@@ -238,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (_isLoading)
-                const LinearProgressIndicator(color: _peach, minHeight: 2),
+                const LinearProgressIndicator(color: _negative, minHeight: 2),
               _buildHeader(context),
               const SizedBox(height: 28),
               _buildBillCard(context),
@@ -288,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           tooltip: 'Notifications',
           onPressed: () => _open(context, const NotificationsScreen()),
-          icon: const Icon(Icons.notifications_none_rounded, color: _green),
+          icon: const Icon(Icons.notifications_none_rounded, color: _positive),
         ),
         GestureDetector(
           onTap: () async {
@@ -301,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             width: 48,
             height: 48,
-            decoration: _brutalDecoration(_blue, radius: 14),
+            decoration: _brutalDecoration(_neutral, radius: 14),
             child: const Icon(Icons.person_outline_rounded, color: _ink),
           ),
         ),
@@ -473,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             CircleAvatar(
               radius: 17,
-              backgroundColor: _green,
+              backgroundColor: _positive,
               child: Icon(
                 Icons.receipt_long_outlined,
                 color: Colors.white70,
@@ -557,7 +557,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     group.cents >= 0
                         ? Icons.arrow_downward_rounded
                         : Icons.arrow_upward_rounded,
-                    color: group.cents >= 0 ? _green : _peach,
+                    color: group.cents >= 0 ? _positive : _negative,
                   ),
                 ),
               ),
@@ -588,12 +588,7 @@ class _HomeScreenState extends State<HomeScreen> {
       value.trim().isEmpty ? '?' : value.trim()[0].toUpperCase();
 
   Color _avatarColor(int index) {
-    const colors = [
-      Color(0xffc58bc5),
-      Color(0xffd6aa88),
-      Color(0xffa8bd91),
-      Color(0xff82aec7),
-    ];
+    const colors = [_neutral, Color(0xffd1d5db), Color(0xff9ca3af)];
     return colors[index % colors.length];
   }
 

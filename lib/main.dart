@@ -74,7 +74,7 @@ class BillBuddy extends StatelessWidget {
             theme: ThemeData(
               brightness: Brightness.light,
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xff4f46e5),
+                seedColor: const Color(0xff374151),
               ),
               extensions: const [AppColors.light],
               scaffoldBackgroundColor: AppColors.light.surfaceAlt,
@@ -98,7 +98,7 @@ class BillBuddy extends StatelessWidget {
             darkTheme: ThemeData(
               brightness: Brightness.dark,
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xff818cf8),
+                seedColor: const Color(0xff9ca3af),
                 brightness: Brightness.dark,
               ),
               extensions: const [AppColors.dark],

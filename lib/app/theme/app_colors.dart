@@ -7,8 +7,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color textMuted;
   final Color surface;
   final Color surfaceAlt;
-  final Color accent;
-  final Color onAccent;
+  final Color positive;
+  final Color negative;
   final Color danger;
 
   const AppColors({
@@ -16,8 +16,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.textMuted,
     required this.surface,
     required this.surfaceAlt,
-    required this.accent,
-    required this.onAccent,
+    required this.positive,
+    required this.negative,
     required this.danger,
   });
 
@@ -30,8 +30,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? textMuted,
     Color? surface,
     Color? surfaceAlt,
-    Color? accent,
-    Color? onAccent,
+    Color? positive,
+    Color? negative,
     Color? danger,
   }) {
     return AppColors(
@@ -39,8 +39,8 @@ class AppColors extends ThemeExtension<AppColors> {
       textMuted: textMuted ?? this.textMuted,
       surface: surface ?? this.surface,
       surfaceAlt: surfaceAlt ?? this.surfaceAlt,
-      accent: accent ?? this.accent,
-      onAccent: onAccent ?? this.onAccent,
+      positive: positive ?? this.positive,
+      negative: negative ?? this.negative,
       danger: danger ?? this.danger,
     );
   }
@@ -53,8 +53,8 @@ class AppColors extends ThemeExtension<AppColors> {
       textMuted: Color.lerp(textMuted, other.textMuted, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       surfaceAlt: Color.lerp(surfaceAlt, other.surfaceAlt, t)!,
-      accent: Color.lerp(accent, other.accent, t)!,
-      onAccent: Color.lerp(onAccent, other.onAccent, t)!,
+      positive: Color.lerp(positive, other.positive, t)!,
+      negative: Color.lerp(negative, other.negative, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
     );
   }
@@ -64,8 +64,8 @@ class AppColors extends ThemeExtension<AppColors> {
     textMuted: Color(0xff4b5563),
     surface: Color(0xfffffbf2),
     surfaceAlt: Color(0xfff7f7fb),
-    accent: Color(0xff4f46e5),
-    onAccent: Colors.white,
+    positive: Color(0xff157347),
+    negative: Color(0xffb42318),
     danger: Color(0xffb42318),
   );
 
@@ -74,8 +74,8 @@ class AppColors extends ThemeExtension<AppColors> {
     textMuted: Color(0xffcbd5e1),
     surface: Color(0xff1f2937),
     surfaceAlt: Color(0xff111827),
-    accent: Color(0xffa5b4fc),
-    onAccent: Color(0xff111827),
+    positive: Color(0xff86efac),
+    negative: Color(0xffffb4ab),
     danger: Color(0xffffb4ab),
   );
 }
