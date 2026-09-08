@@ -117,9 +117,7 @@ class _BillDetailScreenState extends State<BillDetailScreen> {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             icon: const Icon(Icons.call_split),
-            label: Text(
-              receipt.groupId != null ? 'View / Edit Split' : 'Split This Bill',
-            ),
+            label: Text(receipt.hasSplit ? 'Edit split' : 'Split bill'),
             onPressed: () {
               Navigator.push(
                 context,

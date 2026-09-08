@@ -42,6 +42,12 @@ class Receipt {
     this.paidBy,
   }) : createdAt = createdAt ?? DateTime.now();
 
+  /// Whether this receipt has a persisted split configuration.
+  ///
+  /// Individual splits intentionally have no group id, so the payer is the
+  /// shared marker for both group and individual split flows.
+  bool get hasSplit => paidBy != null && items.isNotEmpty;
+
   Receipt copyWith({
     Object? merchantName = _unset,
     Object? date = _unset,

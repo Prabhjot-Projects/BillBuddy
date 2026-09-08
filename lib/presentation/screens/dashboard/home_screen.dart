@@ -360,9 +360,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         receipt == null
                             ? 'Scan receipt'
-                            : draft == null
+                            : draft != null
+                            ? 'Resume'
+                            : receipt.hasSplit
                             ? 'Edit split'
-                            : 'Resume',
+                            : 'Split bill',
                       ),
                     ),
                   ),
