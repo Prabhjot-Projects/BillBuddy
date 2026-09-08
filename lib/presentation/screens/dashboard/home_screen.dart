@@ -259,120 +259,122 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBillCard(BuildContext context) {
     final draft = _drafts.isEmpty ? null : _drafts.first;
     final receipt = draft ?? (_receipts.isEmpty ? null : _receipts.first);
-    return Container(
-      height: 186,
-      padding: const EdgeInsets.fromLTRB(24, 22, 18, 18),
-      decoration: _brutalDecoration(_paper, radius: 20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  draft == null ? 'Total Bill' : 'Continue reviewing',
-                  style: TextStyle(color: _ink, fontSize: 13),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  receipt == null
-                      ? '—'
-                      : getIt<CurrencyController>().format(receipt.total),
-                  style: TextStyle(
-                    color: _ink,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  receipt?.merchantName ?? 'No bills yet',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: _ink, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 92,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Split with',
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 186),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(24, 22, 18, 18),
+        decoration: _brutalDecoration(_paper, radius: 20),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    draft == null ? 'Total Bill' : 'Continue reviewing',
                     style: TextStyle(color: _ink, fontSize: 13),
                   ),
-                ),
-                const SizedBox(height: 4),
-                SizedBox(
-                  width: 58,
-                  height: 52,
-                  child: Stack(
-                    children: [
-                      ..._friends
-                          .take(3)
-                          .toList()
-                          .asMap()
-                          .entries
-                          .map(
-                            (entry) => _miniAvatar(
-                              _initial(entry.value.name),
-                              entry.key * 14,
-                              _avatarColor(entry.key),
-                            ),
-                          ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                SizedBox(
-                  width: 92,
-                  height: 42,
-                  child: FilledButton(
-                    onPressed: () {
-                      if (receipt != null) {
-                        _open(
-                          context,
-                          draft == null
-                              ? ItemAssignmentScreen(receipt: receipt)
-                              : ReviewScreen(receipt: draft),
-                        );
-                      } else {
-                        _open(context, const ScanScreen());
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _ink,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 4,
-                      ),
-                      minimumSize: Size.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                    ),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        receipt == null
-                            ? 'Scan receipt'
-                            : draft != null
-                            ? 'Resume'
-                            : receipt.hasSplit
-                            ? 'Edit split'
-                            : 'Split bill',
-                      ),
+                  SizedBox(height: 4),
+                  Text(
+                    receipt == null
+                        ? '—'
+                        : getIt<CurrencyController>().format(receipt.total),
+                    style: TextStyle(
+                      color: _ink,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  Text(
+                    receipt?.merchantName ?? 'No bills yet',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: _ink, fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            SizedBox(
+              width: 92,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Split with',
+                      style: TextStyle(color: _ink, fontSize: 13),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    width: 58,
+                    height: 52,
+                    child: Stack(
+                      children: [
+                        ..._friends
+                            .take(3)
+                            .toList()
+                            .asMap()
+                            .entries
+                            .map(
+                              (entry) => _miniAvatar(
+                                _initial(entry.value.name),
+                                entry.key * 14,
+                                _avatarColor(entry.key),
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    width: 92,
+                    height: 42,
+                    child: FilledButton(
+                      onPressed: () {
+                        if (receipt != null) {
+                          _open(
+                            context,
+                            draft == null
+                                ? ItemAssignmentScreen(receipt: receipt)
+                                : ReviewScreen(receipt: draft),
+                          );
+                        } else {
+                          _open(context, const ScanScreen());
+                        }
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: _ink,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 4,
+                        ),
+                        minimumSize: Size.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          receipt == null
+                              ? 'Scan receipt'
+                              : draft != null
+                              ? 'Resume'
+                              : receipt.hasSplit
+                              ? 'Edit split'
+                              : 'Split bill',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
