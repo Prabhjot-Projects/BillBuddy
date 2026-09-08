@@ -7,7 +7,6 @@ import 'package:billbuddy/data/entities/receipt.dart';
 import 'package:billbuddy/processes/receipt/split_calculator.dart';
 import 'package:billbuddy/processes/receipt/payment_repository.dart';
 import 'package:billbuddy/processes/social/friend_repository.dart';
-import 'bill_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 /// Read-only computed result of a split — who owes the payer, and how
@@ -142,11 +141,7 @@ class _SplitSummaryScreenState extends State<SplitSummaryScreen> {
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(const SnackBar(content: Text('Bill saved')));
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => BillDetailScreen(receipt: widget.receipt),
-                    ),
-                  );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: const Text('Save Bill'),
               ),

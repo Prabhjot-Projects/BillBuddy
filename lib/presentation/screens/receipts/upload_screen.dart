@@ -123,7 +123,8 @@ class _UploadScreenState extends State<UploadScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () =>
+                Navigator.of(context).popUntil((route) => route.isFirst),
             child: const Text('Done'),
           ),
         ],

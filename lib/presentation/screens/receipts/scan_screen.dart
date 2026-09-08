@@ -215,7 +215,8 @@ class _ScanScreenState extends State<ScanScreen> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () =>
+                    Navigator.of(context).popUntil((route) => route.isFirst),
                 child: const Text('Done'),
               ),
             ),
