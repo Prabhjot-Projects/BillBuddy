@@ -60,10 +60,14 @@ repositories.
 ## Screenshots
 
 The committed screenshot below is an honest snapshot of the current UI, not a
-marketing mockup. It also shows why the visual cleanup remains on the roadmap:
-the older completed-bills view contains inconsistent merchant/date formatting.
+marketing mockup. It shows the dashboard redesign currently being consolidated
+across the rest of the app.
 
-![Current completed bills screen](flutter_01.png)
+![Current dashboard screen](assets/screenshots/dashboard-current.png)
+
+This dashboard capture shows the current net balance, group breakdown,
+resume action, scan FAB, and bottom navigation. It was captured from the
+running app on September 8, 2026.
 
 Additional camera, review, assignment, and split-summary captures should be
 taken from a physical device and added as they are verified. They are not
