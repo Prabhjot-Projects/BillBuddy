@@ -3,6 +3,7 @@ import 'package:billbuddy/data/entities/receipt.dart';
 import 'package:billbuddy/data/entities/receipt_event.dart';
 import 'package:billbuddy/processes/receipt/receipt_repository.dart';
 import 'package:billbuddy/processes/receipt/receipt_event_repository.dart';
+import 'package:billbuddy/services/currency/currency_controller.dart';
 import 'package:billbuddy/presentation/widgets/receipt_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -265,9 +266,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
               eventType: widget.receipt.status == ReceiptStatus.confirmed
                   ? 'edited'
                   : 'confirmed',
-              summary: widget.receipt.status == ReceiptStatus.confirmed
-                  ? 'Receipt edited and confirmed'
-                  : 'Receipt confirmed',
+              summary:
+                  '${widget.receipt.status == ReceiptStatus.confirmed ? 'Edited' : 'Confirmed'} '
+                  '${updatedReceipt.merchantName ?? 'receipt'} · '
+                  '${getIt<CurrencyController>().format(updatedReceipt.total, fallback: 'amount unavailable')}',
               createdAt: DateTime.now(),
             ),
           );

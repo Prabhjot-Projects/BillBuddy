@@ -5,6 +5,7 @@ import 'package:billbuddy/processes/receipt/receipt_event_repository.dart';
 import 'package:billbuddy/data/entities/receipt_event.dart';
 import 'package:billbuddy/services/storage/local/image_storage_service.dart';
 import 'package:billbuddy/processes/receipt/receipt_image_repository.dart';
+import 'package:billbuddy/services/currency/currency_controller.dart';
 import 'package:flutter/material.dart';
 
 /// Shared delete flow for receipt list screens (Pending and Recent).
@@ -81,7 +82,9 @@ Future<bool> confirmAndDeleteReceipt(
         ReceiptEvent(
           receiptId: receipt.id,
           eventType: 'deleted',
-          summary: 'Receipt deleted',
+          summary:
+              'Deleted ${receipt.merchantName ?? 'receipt'} · '
+              '${getIt<CurrencyController>().format(receipt.total, fallback: 'amount unavailable')}',
           createdAt: DateTime.now(),
         ),
       );

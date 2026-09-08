@@ -4,8 +4,10 @@ import 'package:billbuddy/data/entities/friend.dart';
 import 'package:billbuddy/data/entities/payment.dart';
 import 'package:billbuddy/data/entities/participant.dart';
 import 'package:billbuddy/data/entities/receipt.dart';
+import 'package:billbuddy/data/entities/receipt_event.dart';
 import 'package:billbuddy/processes/receipt/split_calculator.dart';
 import 'package:billbuddy/processes/receipt/payment_repository.dart';
+import 'package:billbuddy/processes/receipt/receipt_event_repository.dart';
 import 'package:billbuddy/processes/social/friend_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -267,6 +269,18 @@ class _SplitSummaryScreenState extends State<SplitSummaryScreen> {
       );
       return;
     }
+    await getIt<ReceiptEventRepository>().add(
+      ReceiptEvent(
+        receiptId: widget.receipt.id,
+        eventType: 'payment_recorded',
+        summary:
+            'Settlement · ${_nameFor(participantId)} paid '
+            '${getIt<CurrencyController>().format(amountCents / 100)} to '
+            '${_nameFor(payerId)} for '
+            '${widget.receipt.merchantName ?? 'receipt'}',
+        createdAt: DateTime.now(),
+      ),
+    );
     await _loadFriendNames();
   }
 

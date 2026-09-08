@@ -1,5 +1,8 @@
 import 'package:billbuddy/app/di/service_locator.dart';
+import 'package:billbuddy/data/entities/receipt.dart';
 import 'package:billbuddy/processes/receipt/receipt_event_repository.dart';
+import 'package:billbuddy/processes/receipt/receipt_repository.dart';
+import 'package:billbuddy/services/currency/currency_controller.dart';
 import 'package:billbuddy/data/entities/receipt_event.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +17,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
   bool _loading = true;
   String? _error;
   List<ReceiptEvent> _events = [];
+  Map<String, Receipt> _receiptsById = {};
 
   @override
   void initState() {
@@ -23,9 +27,13 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
 
   Future<void> _load() async {
     final result = await getIt<ReceiptEventRepository>().getAll();
+    final receipts = await getIt<ReceiptRepository>().getAllConfirmed();
     if (!mounted) return;
     setState(() {
       _events = result.valueOrNull ?? [];
+      _receiptsById = {
+        for (final receipt in (receipts.valueOrNull ?? [])) receipt.id: receipt,
+      };
       _error = result.isFailure ? 'Could not load activity history.' : null;
       _loading = false;
     });
@@ -49,12 +57,24 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                 final event = _events[index];
                 return ListTile(
                   leading: Icon(_iconFor(event.eventType)),
-                  title: Text(event.summary),
+                  title: Text(_titleFor(event)),
                   subtitle: Text(_formatDate(event.createdAt)),
                 );
               },
             ),
     );
+  }
+
+  String _titleFor(ReceiptEvent event) {
+    if (event.summary != 'Receipt deleted' &&
+        event.summary != 'Receipt confirmed' &&
+        event.summary != 'Receipt edited and confirmed') {
+      return event.summary;
+    }
+    final receipt = _receiptsById[event.receiptId];
+    if (receipt == null) return event.summary;
+    return '${receipt.merchantName ?? 'Receipt'} · '
+        '${getIt<CurrencyController>().format(receipt.total, fallback: 'amount unavailable')}';
   }
 
   IconData _iconFor(String type) {
