@@ -96,10 +96,10 @@ class _RecentBillsScreenState extends State<RecentBillsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff4f486f),
+      backgroundColor: const Color(0xff374151),
       appBar: AppBar(
         title: const Text('Completed Bills'),
-        backgroundColor: const Color(0xff4f486f),
+        backgroundColor: const Color(0xff374151),
         foregroundColor: Colors.white,
       ),
       body: RefreshIndicator(onRefresh: _loadReceipts, child: _buildBody()),
@@ -222,7 +222,7 @@ class _CompletedReceiptCard extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
           decoration: BoxDecoration(
-            color: const Color(0xffffd18f),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(24),
             boxShadow: const [
               BoxShadow(
@@ -240,7 +240,7 @@ class _CompletedReceiptCard extends StatelessWidget {
                   vertical: 7,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xff302b58),
+                  color: const Color(0xff1f2937),
                   borderRadius: BorderRadius.circular(9),
                 ),
                 child: const Text(
@@ -252,7 +252,7 @@ class _CompletedReceiptCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Divider(color: Color(0xff958263), height: 1),
+              const Divider(color: Color(0xff9ca3af), height: 1),
               const SizedBox(height: 15),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,14 +274,14 @@ class _CompletedReceiptCard extends StatelessWidget {
               const SizedBox(height: 14),
               Text(
                 dateLabel,
-                style: const TextStyle(color: Color(0xff4a3d35), fontSize: 12),
+                style: const TextStyle(color: Color(0xff4b5563), fontSize: 12),
               ),
               const SizedBox(height: 14),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xff504975),
+                  color: const Color(0xffe5e7eb),
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Column(
@@ -313,7 +313,7 @@ class _CompletedReceiptCard extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(color: Color(0xff4a3d35), fontSize: 11),
+          style: const TextStyle(color: Color(0xff4b5563), fontSize: 11),
         ),
         const SizedBox(height: 3),
         Text(
@@ -322,7 +322,7 @@ class _CompletedReceiptCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           textAlign: alignEnd ? TextAlign.end : TextAlign.start,
           style: const TextStyle(
-            color: Color(0xff302b58),
+            color: Color(0xff1f2937),
             fontSize: 17,
             fontWeight: FontWeight.w800,
           ),
@@ -371,11 +371,11 @@ class _AvatarRow extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: names.take(5).toList().asMap().entries.map((entry) {
             final color = [
-              const Color(0xffd695c6),
-              const Color(0xff8eb5cd),
-              const Color(0xffe4a77d),
-              const Color(0xffa9c893),
-              const Color(0xffd7c28d),
+              Color(0xffd1d5db),
+              Color(0xff9ca3af),
+              Color(0xffe5e7eb),
+              Color(0xff6b7280),
+              Color(0xfff3f4f6),
             ][entry.key];
             return Transform.translate(
               offset: Offset(entry.key == 0 ? 0 : -8, 0),
@@ -390,7 +390,7 @@ class _AvatarRow extends StatelessWidget {
                         ? '?'
                         : names[entry.key].trim()[0].toUpperCase(),
                     style: const TextStyle(
-                      color: Color(0xff302b58),
+                      color: Color(0xff1f2937),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

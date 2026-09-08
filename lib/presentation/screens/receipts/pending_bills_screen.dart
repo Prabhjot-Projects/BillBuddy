@@ -143,10 +143,10 @@ class _PendingBillsScreenState extends State<PendingBillsScreen> {
 
   Color _cardColor(int index) {
     const colors = [
-      Color(0xffd8e984),
-      Color(0xffffc857),
-      Color(0xffd8d8d3),
-      Color(0xffff8b78),
+      Color(0xfff3f4f6),
+      Color(0xffe5e7eb),
+      Color(0xffd1d5db),
+      Color(0xfff9fafb),
     ];
     return colors[index % colors.length];
   }
